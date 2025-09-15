@@ -63,7 +63,6 @@ try:
             'kms_driven': np.random.randint(1000, 100000, len(unique_brands) * 5),
             'max_power': np.random.uniform(50, 200, len(unique_brands) * 5),
             'seats': np.random.randint(4, 8, len(unique_brands) * 5),
-            'mileage': np.random.uniform(10, 30, len(unique_brands) * 5),
             'resale_price': np.random.randint(100000, 2000000, len(unique_brands) * 5)
         })
 
@@ -87,7 +86,7 @@ try:
 
     # Recreate StandardScaler for numerical features
     # Assuming the numerical columns are the same as in your training data
-    num_cols = ['model_year', 'registered_year', 'engine_capacity', 'kms_driven', 'max_power', 'seats', 'mileage']
+    num_cols = ['model_year', 'registered_year', 'engine_capacity', 'kms_driven', 'max_power', 'seats']
     # Filter original_df_cleaned to only include num_cols and drop NaNs before fitting scaler
     df_for_scaler = original_df_cleaned[num_cols].dropna()
     scaler = StandardScaler()
@@ -122,7 +121,6 @@ owner_type = st.selectbox("Owner Type", sorted(le_dict.get('owner_type', LabelEn
 fuel_type = st.selectbox("Fuel Type", sorted(le_dict.get('fuel_type', LabelEncoder()).classes_.tolist() if 'fuel_type' in le_dict else ['Petrol', 'Diesel', 'CNG']))
 max_power = st.number_input("Max Power (bhp)", min_value=10.0, max_value=600.0, value=100.0)
 seats = st.number_input("Number of Seats", min_value=2, max_value=15, value=5)
-mileage = st.number_input("Mileage (kmpl)", min_value=1.0, max_value=150.0, value=20.0)
 body_type = st.selectbox("Body Type", sorted(le_dict.get('body_type', LabelEncoder()).classes_.tolist() if 'body_type' in le_dict else ['Sedan', 'Hatchback', 'SUV']))
 
 
@@ -142,7 +140,6 @@ if st.button("Predict Resale Price"):
         'fuel_type': [fuel_type],
         'max_power': [max_power],
         'seats': [seats],
-        'mileage': [mileage],
         'body_type': [body_type]
     })
 
@@ -157,7 +154,7 @@ if st.button("Predict Resale Price"):
             input_data[col] = input_data[col].apply(lambda x: le_dict[col].transform([x])[0] if x in le_dict[col].classes_ else -1) # Use -1 for unseen
 
     # Scaling for numerical features
-    numerical_cols = ['model_year', 'registered_year', 'engine_capacity', 'kms_driven', 'max_power', 'seats', 'mileage']
+    numerical_cols = ['model_year', 'registered_year', 'engine_capacity', 'kms_driven', 'max_power', 'seats']
     # Ensure columns exist before scaling
     cols_to_scale = [col for col in numerical_cols if col in input_data.columns]
     if cols_to_scale:
